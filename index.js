@@ -23,7 +23,29 @@ app.post("/compile", (req, res) => {
   const {code , lang} = req.body;
 
   const sourcecode = `print("Hello World!")`;
-  let resultPromise = cpp.runSource(code);
+  if(lang === "c_cpp"){
+    let resultPromise = cpp.runSource(code);
+    resultPromise
+        .then(result => {
+            console.log(result);
+            if(!result.stderr){
+              return res.status(200).json({
+                  compileOutput : result.stdout,
+                  executionOutput : result.stdout
+                })
+            }else{
+              return res.status(200).json({
+                  compileOutput : result.stderr,
+                  executionOutput : result.stderr
+                })
+            }
+            
+        })
+        .catch(err => {
+            console.log(err);
+        });
+  }else if(lang === "java"){
+    let resultPromise = java.runSource(code);
   resultPromise
       .then(result => {
           console.log(result);
@@ -43,6 +65,29 @@ app.post("/compile", (req, res) => {
       .catch(err => {
           console.log(err);
       });
+  }else {
+    let resultPromise = python.runSource(code);
+  resultPromise
+      .then(result => {
+          console.log(result);
+          if(!result.stderr){
+            return res.status(200).json({
+                compileOutput : result.stdout,
+                executionOutput : result.stdout
+              })
+          }else{
+            return res.status(200).json({
+                compileOutput : result.stderr,
+                executionOutput : result.stderr
+              })
+          }
+          
+      })
+      .catch(err => {
+          console.log(err);
+      });
+  }
+  
 
 //   var envData = { OS : "windows" , cmd : "g++" , options: {timeout:2000 } }; 
 //   var envDataLinux = { OS : "linux" , cmd : "g++" , options: {timeout:2000 }  }; // ( uses gcc command to compile )
