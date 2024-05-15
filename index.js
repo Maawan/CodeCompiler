@@ -9,7 +9,12 @@ const port = 3001;
 
 app.use(bodyParser.json());
 app.use(cors());
+app.get('/' , (req , res) => {
+  res.status(200).json({
+    message : "ok"
+  });
 
+})
 app.post("/compile", (req, res) => {
   const code = req.body.code;
   const lang = req.body.lang;
@@ -71,7 +76,7 @@ app.post("/compile", (req, res) => {
 
   // Spawn a new g++ process for each compilation request
   if (lang === "c_cpp") {
-    compilerPath = "C:/MinGW/bin/g++.exe";
+    compilerPath = "/kali/bin/g++";
     compilerArgs = ["-o", "compiledCode", "-x", "c++", "-"];
   } else if (lang === "java") {
     compilerPath = "";
