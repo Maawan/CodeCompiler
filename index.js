@@ -19,16 +19,19 @@ app.get("/" , (req , res) => {
 })
 app.post("/compile", (req, res) => {
   const {code , lang} = req.body;
-  var envData = { OS : "windows" , cmd : "g++" , options: {timeout:1000 } }; 
-  var envDataLinux = { OS : "linux" , cmd : "gcc" , options: {timeout:1000 }  }; // ( uses gcc command to compile )
-    compiler.compileCPP(envData , code , function (data) {
+  var envData = { OS : "windows" , cmd : "g++" , options: {timeout:2000 } }; 
+  var envDataLinux = { OS : "linux" , cmd : "g++" , options: {timeout:2000 }  }; // ( uses gcc command to compile )
+    compiler.compileCPP(envDataLinux , code , function (data) {
         if(data.output){
 
-           return res.status(200).json({compileOutput: data.output , executionOutput : data.output});
+        res.status(200).json({compileOutput: data.output , executionOutput : data.output});
         }else{
-            return res.status(200).json({compileOutput: data.error , executionOutput : data.error});
+        res.status(200).json({compileOutput: data.error , executionOutput : data.error});
         }
-        
+        compiler.flush(function(){
+            console.log("Clear");
+        })
+
     });
 
 });
